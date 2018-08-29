@@ -44,7 +44,7 @@ export default class AppSyncClient {
           }
       });
 
-      const response = await client.query({ query: query, variables: variables })
+      const response = await client.query({ query: query, variables: variables }).catch(e => { return e })
       return response
  
         //Now subscribe to results
