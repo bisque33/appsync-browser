@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import BuildIcon from '@material-ui/icons/Build';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,9 +9,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   appBar: {
@@ -26,9 +25,10 @@ const styles = theme => ({
     flexWrap: 'wrap',
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200,
+    marginBottom: theme.spacing.unit * 2,
+    marginRight: theme.spacing.unit * 2,
+    marginLeft: theme.spacing.unit * 2,
+    // width: 500,
   },
 });
 
@@ -37,26 +37,21 @@ function Transition(props) {
 }
 
 class Environment extends React.Component {
-  state = {
-    open: false,
-  };
-
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+  state = { open: false }
+  handleClickOpen = () => { this.setState({ open: true }) }
+  handleClose = () => { this.setState({ open: false }) }
 
   render() {
-    const { classes } = this.props;
+    const { classes } = this.props
+
     return (
       <div>
-        {/* <Button onClick={this.handleClickOpen}>Open full-screen dialog</Button> */}
-        <Button color="inherit" onClick={this.handleClickOpen}>
+        {/* <Button color="inherit" onClick={this.handleClickOpen}>
             Add
-        </Button>
+        </Button> */}
+        <IconButton color="inherit" onClick={this.handleClickOpen}>
+          <BuildIcon />
+        </IconButton>  
         <Dialog
           fullScreen
           // fullWidth
@@ -96,34 +91,19 @@ export default withStyles(styles)(Environment);
 // -----------------------------------------------------
 
 class EnvironmentForm extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      selectedTabNumber: 0,
-    }
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange = (event, value) => {
-    this.setState({ selectedTabNumber: value });
-  };
-
   render() {
     const { classes } = this.props;
-    const { selectedTabNumber } = this.state;
+
     return (
       <div>
-        名前: 
-        <AppBar position="static">
-          <Tabs value={selectedTabNumber} onChange={this.handleChange}>
-            <Tab label="Connection" />
-            <Tab label="Users" />
-            <Tab label="Schema" />
-          </Tabs>
-        </AppBar>
-        {selectedTabNumber === 0 && <ConnectionForm classes={classes} />}
-        {selectedTabNumber === 1 && <UsersForm classes={classes} />}
-        {selectedTabNumber === 2 && <SchemaForm classes={classes} onUpdateGraphqlSchema={this.props.onUpdateGraphqlSchema}/>}
+        <Typography variant="headline" gutterBottom>
+          Connection
+        </Typography>
+        <ConnectionForm classes={classes} />
+        <Typography variant="headline" gutterBottom>
+          Users
+        </Typography>
+        <UsersForm classes={classes} />
       </div>
     );
   }
@@ -177,44 +157,50 @@ class ConnectionForm extends React.Component {
             id="region"
             label="region"
             className={classes.textField}
-            margin="normal"
+            fullWidth
             value={this.state.region}
             onChange={this.handleChange('region')}
           />
           <TextField
             id="IdentityPoolId"
             label="IdentityPoolId"
+            className={classes.textField}
             fullWidth
-            margin="normal"
             value={this.state.IdentityPoolId}
             onChange={this.handleChange('IdentityPoolId')}
           />
           <TextField
             id="userPoolId"
             label="userPoolId"
+            className={classes.textField}
             fullWidth
-            margin="normal"
             value={this.state.userPoolId}
             onChange={this.handleChange('userPoolId')}
           />
           <TextField
             id="userPoolWebClientId"
             label="userPoolWebClientId"
+            className={classes.textField}
             fullWidth
-            margin="normal"
             value={this.state.userPoolWebClientId}
             onChange={this.handleChange('userPoolWebClientId')}
           />
           <TextField
             id="appSyncEndpoint"
             label="appSyncEndpoint"
+            className={classes.textField}
             placeholder="https://{xxx}.appsync-api.{region}.amazonaws.com/graphql"
             fullWidth
-            margin="normal"
             value={this.state.appSyncEndpoint}
             onChange={this.handleChange('appSyncEndpoint')}
           />
-          <input type="submit" value="Submit" />
+          <Button 
+            type="submit" 
+            variant="contained" 
+            className={classes.button}
+          >
+            Submit
+          </Button>
         </form>
       </div>
     );
@@ -275,7 +261,9 @@ class UsersForm extends React.Component {
             value={this.state.password}
             onChange={this.handleChange('password')}
           />
-          <input type="submit" value="Submit" />
+          <Button type="submit" variant="contained" className={classes.button}>
+            Submit
+          </Button>
         </form>
       </div>
     );
@@ -283,59 +271,5 @@ class UsersForm extends React.Component {
 }
 
 UsersForm.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-// -----------------------------------------------------
-// SchemaForm
-// -----------------------------------------------------
-
-class SchemaForm extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      graphqlSchema: localStorage.getItem('graphqlSchema') || '',
-    }
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
-
-  handleSubmit(event) {
-    alert('An essay was submitted');
-    localStorage.setItem('graphqlSchema', this.state.graphqlSchema);
-    this.props.onUpdateGraphqlSchema();
-    event.preventDefault();
-  }
-
-  render() {
-    const { classes } = this.props;
-
-    return (
-      <div>
-        <form className={classes.container} onSubmit={this.handleSubmit}>
-          <TextField
-            id="graphqlSchema"
-            label="graphqlSchema"
-            fullWidth
-            multiline={true}
-            rows="30"
-            margin="normal"
-            value={this.state.graphqlSchema}
-            onChange={this.handleChange('graphqlSchema')}
-          />
-          <input type="submit" value="Submit" />
-        </form>
-      </div>
-    );
-  }
-}
-
-SchemaForm.propTypes = {
   classes: PropTypes.object.isRequired,
 };

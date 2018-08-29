@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Environments from './environments'
+import EnvironmentForm from './environment_form'
 
 const styles = theme => ({
   root: {
@@ -49,7 +49,7 @@ class CustomHeader extends React.Component {
             <Typography variant="title" color="inherit" className={classes.flex}>
               AppSync Browser
             </Typography>
-            <Environments />
+            <EnvironmentForm />
           </Toolbar>
         </AppBar>
       </div>

@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types'
 import '../../node_modules/graphiql/graphiql.css'
 import AppSyncClient from '../lib/appsync_client.js'
-import { GraphqlSchema } from '../lib/graphql_parser';
 
 const styles = ({
   graphiqlRoot: {
@@ -13,10 +12,8 @@ const styles = ({
 })
 
 async function graphQLFetcher(graphQLParams) {
-  console.log(GraphqlSchema)
   const client = new AppSyncClient()
   const result = await client.query(graphQLParams)
-  // alert(result)
   return result
 }
 
@@ -37,7 +34,7 @@ class CustomGraphiQL extends React.Component {
       // GraphQL Schema
       // If `undefined` is provided, an introspection query is executed
       // using the fetcher.
-      schema: this.props.schema.doc,
+      schema: undefined,
 
       // Useful to determine which operation to run
       // when there are multiple of them.
@@ -77,9 +74,7 @@ class CustomGraphiQL extends React.Component {
       <div className={classes.graphiqlRoot}>
         <GraphiQL 
           fetcher={graphQLFetcher} 
-          schema={this.props.schema.getSchema()}
           editorTheme="solarized light"
-          
         >
           <GraphiQL.Logo>
             GraphiQL

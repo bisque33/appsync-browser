@@ -25,8 +25,6 @@ export default class AppSyncClient {
   }
 
   async query (params) {
-    console.log(params)
-
     const username = localStorage.getItem('username')
     const password = localStorage.getItem('password')
     const query = gql(params.query)
@@ -47,7 +45,6 @@ export default class AppSyncClient {
       });
 
       const response = await client.query({ query: query, variables: variables })
-      console.log('results of query: ', response)
       return response
  
         //Now subscribe to results
